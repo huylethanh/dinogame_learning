@@ -16,7 +16,7 @@ class DinoGame extends FlameGame {
   late ParallaxComponent _parallaxComponent;
 
   final _imageNames = [
-    ParallaxImageData('parallax/plx-1.png'),
+    ParallaxImageData('parallax/plx-1.png1'),
     ParallaxImageData('parallax/plx-2.png'),
     ParallaxImageData('parallax/plx-3.png'),
     ParallaxImageData('parallax/plx-4.png'),
