@@ -1,20 +1,16 @@
-import 'dart:ui' as ui;
-
 import 'package:flame/components.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
-import 'package:flame/sprite.dart';
 import 'package:flame_learning/dino.dart';
+import 'package:flame_learning/enemy.dart';
+import 'package:flame_learning/enemy_data.dart';
 
-// enum DinoState {
-//   idle,
-//   running,
-// }
-
-class DinoGame extends FlameGame {
-  late SpriteAnimationGroupComponent _dino;
+class DinoGame extends FlameGame with TapDetector {
+  late Dino _dino;
   late ParallaxComponent _parallaxComponent;
+  late TextComponent textComponent;
+  var score = 0;
 
   final _imageNames = {
     'parallax/plx-1.png': 1.0,
@@ -27,30 +23,31 @@ class DinoGame extends FlameGame {
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
+    camera.viewport = FixedResolutionViewport(Vector2(360, 180));
 
-    final spriteSheet = SpriteSheet(
-      image: await images.load("DinoSprites - tard.png"),
-      srcSize: Vector2(24, 24),
-    );
+    _loadParallax();
 
-    // var idle =
-    //     spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 0, to: 3);
+    _dino = Dino(size);
 
-    // var running =
-    //     spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 4, to: 10);
+    add(_dino);
 
-    // final dinoSize = Vector2(64, 72);
+    textComponent = TextComponent(text: score.toString());
+    textComponent.position = Vector2(5, 5);
+    textComponent.size = Vector2(50, 50);
+    add(textComponent);
 
-    // _dino = SpriteAnimationGroupComponent<DinoState>(
-    //   animations: {
-    //     DinoState.running: running,
-    //     DinoState.idle: idle,
-    //   },
-    //   current: DinoState.running,
-    //   position: Vector2(100, size.y - 90),
-    //   size: dinoSize,
-    // );
+    var enemy = Enemy(size, EnemyType.rino);
+    add(enemy);
+  }
 
+  @override
+  void onTap() {
+    super.onTap();
+
+    _dino.jump();
+  }
+
+  void _loadParallax() async {
     final layers = _imageNames.entries
         .map(
           (e) => ParallaxLayer.load(
@@ -68,11 +65,10 @@ class DinoGame extends FlameGame {
     _parallaxComponent = ParallaxComponent(
       parallax: Parallax(
         await Future.wait(layers),
-        baseVelocity: Vector2(30, 0),
+        baseVelocity: Vector2(20, 0),
       ),
     );
 
     add(_parallaxComponent);
-    add(Dino(spriteSheet));
   }
 }
