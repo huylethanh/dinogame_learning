@@ -5,11 +5,17 @@ import 'package:flame/sprite.dart';
 import 'package:flame_learning/constansts.dart';
 import 'package:flame_learning/enemy.dart';
 
-enum DinoState { idle, running, hit }
+enum DinoState {
+  idle,
+  running,
+  hit,
+  fall,
+}
 
 class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
   late Vector2 _gameSize;
   late Timer _hitTimer;
+  late int health = 3;
 
   Dino(Vector2 gameSize) {
     _gameSize = gameSize;
@@ -38,10 +44,17 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
     var hit =
         spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 14, to: 16);
 
+    var fall = spriteSheet.createAnimation(
+      row: 0,
+      stepTime: 0.1,
+      from: 16,
+    );
+
     animations = {
       DinoState.running: running,
       DinoState.idle: idle,
       DinoState.hit: hit,
+      DinoState.fall: fall,
     };
 
     current = DinoState.running;
@@ -66,8 +79,7 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
     super.onCollision(intersectionPoints, other);
 
     if (other is Enemy && current != DinoState.hit) {
-      current = DinoState.hit;
-      _hitTimer.start();
+      _hit();
     }
   }
 
@@ -84,7 +96,10 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
     if (_isOnGround()) {
       y = yMax;
       speedY = 0.0;
-      //current = DinoState.running;
+
+      if (current != DinoState.hit) {
+        current = DinoState.running;
+      }
     }
 
     _hitTimer.update(dt);
@@ -95,6 +110,18 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
       speedY -= 400;
       current = DinoState.idle;
     }
+  }
+
+  void _hit() {
+    health -= 1;
+
+    if (health == 0) {
+      current = DinoState.fall;
+      return;
+    }
+
+    current = DinoState.hit;
+    _hitTimer.start();
   }
 
   bool _isOnGround() {
