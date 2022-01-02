@@ -1,18 +1,22 @@
 import 'package:flame/assets.dart';
 import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_learning/constansts.dart';
+import 'package:flame_learning/enemy.dart';
 
 enum DinoState { idle, running, hit }
 
-class Dino extends SpriteAnimationGroupComponent {
+class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
   late Vector2 _gameSize;
+  late Timer _hitTimer;
+
   Dino(Vector2 gameSize) {
     _gameSize = gameSize;
   }
 
   double speedY = 0.0;
-  double yMax = 250;
+  double yMax = 300;
   double gravity = 1000;
 
   @override
@@ -42,7 +46,29 @@ class Dino extends SpriteAnimationGroupComponent {
 
     current = DinoState.running;
 
+    _hitTimer = Timer(1, onTick: () {
+      current = DinoState.running;
+    });
+
     caculateSize();
+  }
+
+  @override
+  void onMount() {
+    super.onMount();
+
+    final shape = HitboxRectangle(relation: Vector2(0.5, 0.7));
+    addHitbox(shape);
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
+    super.onCollision(intersectionPoints, other);
+
+    if (other is Enemy && current != DinoState.hit) {
+      current = DinoState.hit;
+      _hitTimer.start();
+    }
   }
 
   @override
@@ -58,13 +84,15 @@ class Dino extends SpriteAnimationGroupComponent {
     if (_isOnGround()) {
       y = yMax;
       speedY = 0.0;
-      current = DinoState.running;
+      //current = DinoState.running;
     }
+
+    _hitTimer.update(dt);
   }
 
   void jump() {
     if (_isOnGround()) {
-      speedY -= 350;
+      speedY -= 400;
       current = DinoState.idle;
     }
   }

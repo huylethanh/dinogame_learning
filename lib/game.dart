@@ -1,15 +1,16 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_learning/dino.dart';
-import 'package:flame_learning/enemy.dart';
-import 'package:flame_learning/enemy_data.dart';
+import 'package:flame_learning/enemy_manager.dart';
+import 'package:flutter/painting.dart';
 
-class DinoGame extends FlameGame with TapDetector {
+class DinoGame extends FlameGame with TapDetector, HasCollidables {
   late Dino _dino;
   late ParallaxComponent _parallaxComponent;
-  late TextComponent textComponent;
+  late TextComponent _textComponent;
   var score = 0;
 
   final _imageNames = {
@@ -20,6 +21,9 @@ class DinoGame extends FlameGame with TapDetector {
     'parallax/plx-5.png': 6.6,
   };
 
+  final _regular = TextPaint(
+      style: TextStyle(fontSize: 18, color: BasicPalette.white.color));
+
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
@@ -27,17 +31,23 @@ class DinoGame extends FlameGame with TapDetector {
 
     _loadParallax();
 
+    _textComponent =
+        TextComponent(text: '0', textRenderer: _regular, priority: 1)
+          ..anchor = Anchor.topCenter
+          ..x = size.x / 2
+          ..y = 5;
+
     _dino = Dino(size);
 
     add(_dino);
 
-    textComponent = TextComponent(text: score.toString());
-    textComponent.position = Vector2(5, 5);
-    textComponent.size = Vector2(50, 50);
-    add(textComponent);
+    // var enemy = Enemy(size, EnemyType.rino);
+    //add(enemy);
 
-    var enemy = Enemy(size, EnemyType.rino);
-    add(enemy);
+    EnemyManager enemyManager = EnemyManager();
+    add(enemyManager);
+
+    add(_textComponent);
   }
 
   @override
@@ -45,6 +55,13 @@ class DinoGame extends FlameGame with TapDetector {
     super.onTap();
 
     _dino.jump();
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    score += 1;
+    _textComponent.text = score.toString();
   }
 
   void _loadParallax() async {

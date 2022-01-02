@@ -1,10 +1,11 @@
 import 'package:flame/assets.dart';
 import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_learning/constansts.dart';
 import 'package:flame_learning/enemy_data.dart';
 
-class Enemy extends SpriteAnimationComponent {
+class Enemy extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late Vector2 _gameSize;
   final speed = 100.0;
 
@@ -39,12 +40,20 @@ class Enemy extends SpriteAnimationComponent {
   }
 
   @override
+  void onMount() {
+    super.onMount();
+
+    final shape = HitboxRectangle(relation: Vector2.all(0.8));
+    addHitbox(shape);
+  }
+
+  @override
   void update(double dt) {
     super.update(dt);
     x -= speed * dt;
 
     if (x < _enemyData.textureSize.x * -1) {
-      x = _gameSize.x;
+      shouldRemove = true;
     }
   }
 
