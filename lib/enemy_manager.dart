@@ -13,8 +13,7 @@ class EnemyManager extends Component with HasGameRef<DinoGame> {
   EnemyManager() {
     _random = Random();
     _max = EnemyType.values.length;
-    _timer =
-        Timer(4, repeat: true, onTick: () => spawnEnemy(), autoStart: true);
+    _timer = Timer(4, repeat: true);
   }
 
   void spawnEnemy() {
@@ -27,14 +26,30 @@ class EnemyManager extends Component with HasGameRef<DinoGame> {
 
   @override
   void onMount() {
-    super.onMount();
+    _timer.onTick = spawnEnemy;
     _timer.start();
+    super.onMount();
   }
 
   @override
   void update(double dt) {
-    super.update(dt);
-
     _timer.update(dt);
+    super.update(dt);
+  }
+
+  void removeAllEnemies() {
+    final enemies = gameRef.children.whereType<Enemy>();
+    for (var element in enemies) {
+      element.removeFromParent();
+    }
+  }
+
+  void clear() {
+    _timer.stop();
+  }
+
+  @override
+  void onRemove() {
+    super.onRemove();
   }
 }

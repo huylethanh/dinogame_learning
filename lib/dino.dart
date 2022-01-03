@@ -82,7 +82,7 @@ class Dino extends SpriteAnimationGroupComponent
     super.onCollision(intersectionPoints, other);
 
     if (other is Enemy && current != DinoState.hit) {
-      hit();
+      hit(other);
     }
   }
 
@@ -116,7 +116,8 @@ class Dino extends SpriteAnimationGroupComponent
     }
   }
 
-  void hit() {
+  void hit(Enemy enemy) {
+    //enemy.removeFromParent();
     player.lostLive();
     AudioManager.instance.playSfx('hurt7.wav');
     if (player.lives <= 0) {

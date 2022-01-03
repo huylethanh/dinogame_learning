@@ -15,4 +15,9 @@ class Player extends ChangeNotifier {
     score += 1;
     notifyListeners();
   }
+
+  void reset() {
+    score = 0;
+    _lives = maxLives;
+  }
 }

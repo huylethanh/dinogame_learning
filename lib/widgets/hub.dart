@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Hub extends StatelessWidget {
-  static const String HubId = "HubId";
+  static const String id = "HubId";
   final DinoGame dinoGame;
   const Hub({required this.dinoGame, Key? key}) : super(key: key);
 
@@ -16,7 +16,7 @@ class Hub extends StatelessWidget {
     return ChangeNotifierProvider.value(
         value: dinoGame.player,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -24,8 +24,8 @@ class Hub extends StatelessWidget {
                 path: "pause-16.png",
                 pressedPath: "pause-16.png",
                 onPressed: () {
-                  dinoGame.overlays.remove(Hub.HubId);
-                  dinoGame.overlays.add(PauseMenu.PauseMenuId);
+                  dinoGame.overlays.remove(Hub.id);
+                  dinoGame.overlays.add(PauseMenu.id);
                   AudioManager.instance.pauseBgm();
                   dinoGame.pauseEngine();
                 },

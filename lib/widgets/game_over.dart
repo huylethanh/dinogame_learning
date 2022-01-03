@@ -1,15 +1,17 @@
 import 'dart:ui';
 
-import 'package:flame_learning/audio_manager.dart';
+import 'package:flame_learning/dino.dart';
 import 'package:flame_learning/game.dart';
 import 'package:flame_learning/widgets/hub.dart';
 import 'package:flutter/material.dart';
 
-class PauseMenu extends StatelessWidget {
-  static const String id = "PauseMenuId";
+import '../audio_manager.dart';
+
+class GameOver extends StatelessWidget {
+  static const String id = "GameOver";
   final DinoGame dinoGame;
 
-  const PauseMenu({required this.dinoGame, Key? key}) : super(key: key);
+  const GameOver({required this.dinoGame, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +34,16 @@ class PauseMenu extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      dinoGame.overlays.remove(PauseMenu.id);
+                      dinoGame.overlays.remove(GameOver.id);
                       dinoGame.overlays.add(Hub.id);
-                      AudioManager.instance.resumeBgm();
                       dinoGame.resumeEngine();
+                      dinoGame.reset();
+                      dinoGame.startGamePlay();
+
+                      AudioManager.instance.resumeBgm();
                     },
                     child: const Text(
-                      'Resume',
+                      'Restart',
                       style: TextStyle(
                         fontSize: 30,
                       ),

@@ -8,6 +8,8 @@ import 'package:flame_learning/Models/player.dart';
 import 'package:flame_learning/audio_manager.dart';
 import 'package:flame_learning/dino.dart';
 import 'package:flame_learning/enemy_manager.dart';
+import 'package:flame_learning/widgets/game_over.dart';
+import 'package:flame_learning/widgets/hub.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
 
@@ -33,17 +35,16 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
     'jump14.wav',
   ];
 
+  late EnemyManager _enemyManager;
+
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
     camera.viewport = FixedResolutionViewport(Vector2(360, 180));
     AudioManager.instance.init(_audioAssets);
-
     _loadParallax();
-    _dino = Dino(player);
-    add(_dino);
-    EnemyManager enemyManager = EnemyManager();
-    add(enemyManager);
+
+    startGamePlay();
   }
 
   @override
@@ -51,13 +52,12 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
     // TODO: implement onMount
     super.onMount();
 
-    AudioManager.instance.startBgm("Chiptune Dream Loop.wav");
+    AudioManager.instance.startBgm("8Bit Platformer Loop.wav");
   }
 
   @override
   void onTap() {
     super.onTap();
-
     _dino.jump();
   }
 
@@ -65,6 +65,38 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
   void update(double dt) {
     super.update(dt);
     player.updateScore();
+
+    if (player.lives <= 0) {
+      overlays.add(GameOver.id);
+      overlays.remove(Hub.id);
+      pauseEngine();
+      AudioManager.instance.pauseBgm();
+    }
+  }
+
+  void startGamePlay() {
+    _dino = Dino(player);
+    _enemyManager = EnemyManager();
+    add(_dino);
+    add(_enemyManager);
+  }
+
+  // This method remove all the actors from the game.
+  void _disconnectActors() {
+    _dino.removeFromParent();
+    _enemyManager.removeAllEnemies();
+    _enemyManager.removeFromParent();
+  }
+
+  // This method reset the whole game world to initial state.
+  void reset() {
+    _enemyManager.clear();
+
+    // First disconnect all actions from game world.
+    _disconnectActors();
+
+    // Reset player data to inital values.
+    player.reset();
   }
 
   void _loadParallax() async {

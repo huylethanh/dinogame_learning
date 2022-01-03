@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame_learning/widgets/game_over.dart';
 import 'package:flame_learning/widgets/hub.dart';
 import 'package:flame_learning/widgets/pause_menu.dart';
 import 'package:flutter/material.dart';
@@ -46,11 +47,11 @@ class DinoRunApp extends StatelessWidget {
           ),
           // Register all the overlays that will be used by this game.
           overlayBuilderMap: {
-            Hub.HubId: (context, DinoGame game) => Hub(dinoGame: game),
-            PauseMenu.PauseMenuId: (context, DinoGame game) =>
-                PauseMenu(dinoGame: game),
+            Hub.id: (context, DinoGame game) => Hub(dinoGame: game),
+            PauseMenu.id: (context, DinoGame game) => PauseMenu(dinoGame: game),
+            GameOver.id: (context, DinoGame game) => GameOver(dinoGame: game)
           },
-          initialActiveOverlays: [Hub.HubId],
+          initialActiveOverlays: [Hub.id],
           game: DinoGame(),
         ),
       ),
