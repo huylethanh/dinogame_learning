@@ -3,8 +3,12 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
+import 'package:flame/widgets.dart';
+import 'package:flame_learning/Models/player.dart';
+import 'package:flame_learning/audio_manager.dart';
 import 'package:flame_learning/dino.dart';
 import 'package:flame_learning/enemy_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
 
 class DinoGame extends FlameGame with TapDetector, HasCollidables {
@@ -12,6 +16,7 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
   late ParallaxComponent _parallaxComponent;
   late TextComponent _textComponent;
   var score = 0;
+  late Player player = Player();
 
   final _imageNames = {
     'parallax/plx-1.png': 1.0,
@@ -21,33 +26,29 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
     'parallax/plx-5.png': 6.6,
   };
 
+  static const _audioAssets = [
+    '8Bit Platformer Loop.wav',
+    'hurt7.wav',
+    'jump14.wav',
+  ];
+
   final _regular = TextPaint(
-      style: TextStyle(fontSize: 18, color: BasicPalette.white.color));
+      style: TextStyle(
+          fontSize: 18,
+          color: BasicPalette.white.color,
+          fontFamily: "Audiowide"));
 
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
     camera.viewport = FixedResolutionViewport(Vector2(360, 180));
+    AudioManager.instance.init(_audioAssets);
 
     _loadParallax();
-
-    _textComponent =
-        TextComponent(text: '0', textRenderer: _regular, priority: 1)
-          ..anchor = Anchor.topCenter
-          ..x = size.x / 2
-          ..y = 5;
-
-    _dino = Dino(size);
-
+    _dino = Dino(player);
     add(_dino);
-
-    // var enemy = Enemy(size, EnemyType.rino);
-    //add(enemy);
-
     EnemyManager enemyManager = EnemyManager();
     add(enemyManager);
-
-    add(_textComponent);
   }
 
   @override
@@ -60,8 +61,7 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
   @override
   void update(double dt) {
     super.update(dt);
-    score += 1;
-    _textComponent.text = score.toString();
+    player.updateScore();
   }
 
   void _loadParallax() async {

@@ -2,8 +2,11 @@ import 'package:flame/assets.dart';
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_learning/Models/player.dart';
 import 'package:flame_learning/constansts.dart';
 import 'package:flame_learning/enemy.dart';
+
+import 'audio_manager.dart';
 
 enum DinoState {
   idle,
@@ -12,14 +15,14 @@ enum DinoState {
   fall,
 }
 
-class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
+class Dino extends SpriteAnimationGroupComponent
+    with HasHitboxes, Collidable, HasGameRef {
   late Vector2 _gameSize;
   late Timer _hitTimer;
-  late int health = 3;
+  //late int health = 3;
+  final Player player;
 
-  Dino(Vector2 gameSize) {
-    _gameSize = gameSize;
-  }
+  Dino(this.player);
 
   double speedY = 0.0;
   double yMax = 300;
@@ -28,7 +31,7 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
   @override
   Future<void>? onLoad() async {
     super.onLoad();
-
+    _gameSize = gameRef.size;
     Images images = Images();
     final spriteSheet = SpriteSheet(
       image: await images.load("DinoSprites - tard.png"),
@@ -79,7 +82,7 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
     super.onCollision(intersectionPoints, other);
 
     if (other is Enemy && current != DinoState.hit) {
-      _hit();
+      hit();
     }
   }
 
@@ -109,13 +112,14 @@ class Dino extends SpriteAnimationGroupComponent with HasHitboxes, Collidable {
     if (_isOnGround()) {
       speedY -= 400;
       current = DinoState.idle;
+      AudioManager.instance.playSfx('jump14.wav');
     }
   }
 
-  void _hit() {
-    health -= 1;
-
-    if (health == 0) {
+  void hit() {
+    player.lostLive();
+    AudioManager.instance.playSfx('hurt7.wav');
+    if (player.lives <= 0) {
       current = DinoState.fall;
       return;
     }
