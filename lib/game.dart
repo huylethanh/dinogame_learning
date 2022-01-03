@@ -27,16 +27,11 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
   };
 
   static const _audioAssets = [
+    'Chiptune Dream Loop.wav',
     '8Bit Platformer Loop.wav',
     'hurt7.wav',
     'jump14.wav',
   ];
-
-  final _regular = TextPaint(
-      style: TextStyle(
-          fontSize: 18,
-          color: BasicPalette.white.color,
-          fontFamily: "Audiowide"));
 
   @override
   Future<void>? onLoad() async {
@@ -49,6 +44,14 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
     add(_dino);
     EnemyManager enemyManager = EnemyManager();
     add(enemyManager);
+  }
+
+  @override
+  void onMount() {
+    // TODO: implement onMount
+    super.onMount();
+
+    AudioManager.instance.startBgm("Chiptune Dream Loop.wav");
   }
 
   @override
