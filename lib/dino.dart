@@ -88,14 +88,18 @@ class Dino extends SpriteAnimationGroupComponent
     }
 
     if (other is Coin) {
+      AudioManager.instance.playSfx("coin.wav");
       player.pickCoin();
+
       other.reset();
       return;
     }
 
     if (other is Banana) {
+      AudioManager.instance.playSfx("pick.wav");
       other.removeFromParent();
       player.setInvisible();
+
       return;
     }
   }
@@ -128,15 +132,16 @@ class Dino extends SpriteAnimationGroupComponent
   void jump() {
     if (_isOnGround()) {
       speedY -= 400;
-      current = DinoState.idle;
       AudioManager.instance.playSfx('jump14.wav');
+      current = DinoState.idle;
     }
   }
 
   void hit(Enemy enemy) {
     //enemy.removeFromParent();
-    player.lostLive();
     AudioManager.instance.playSfx('hurt7.wav');
+    player.lostLive();
+
     if (player.lives <= 0) {
       current = DinoState.fall;
       return;

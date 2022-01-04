@@ -31,6 +31,8 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
     '8Bit Platformer Loop.wav',
     'hurt7.wav',
     'jump14.wav',
+    'pick.wav,',
+    'coin.wav',
   ];
 
   late EnemyManager _enemyManager;
