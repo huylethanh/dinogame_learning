@@ -1,17 +1,13 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
-import 'package:flame/widgets.dart';
 import 'package:flame_learning/Models/player.dart';
 import 'package:flame_learning/audio_manager.dart';
 import 'package:flame_learning/dino.dart';
 import 'package:flame_learning/enemy_manager.dart';
 import 'package:flame_learning/widgets/game_over.dart';
 import 'package:flame_learning/widgets/hub.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/painting.dart';
 
 class DinoGame extends FlameGame with TapDetector, HasCollidables {
   late Dino _dino;
