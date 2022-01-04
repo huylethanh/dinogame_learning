@@ -4,6 +4,7 @@ import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_learning/Models/player.dart';
 import 'package:flame_learning/audio_manager.dart';
+import 'package:flame_learning/banana.dart';
 import 'package:flame_learning/coin.dart';
 import 'package:flame_learning/dino.dart';
 import 'package:flame_learning/enemy_manager.dart';
@@ -34,6 +35,16 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
 
   late EnemyManager _enemyManager;
 
+  DinoGame() {
+    player.addListener(() {
+      if (player.invisible) {
+        _parallaxComponent.parallax?.baseVelocity = Vector2(100, 0);
+      } else {
+        _parallaxComponent.parallax?.baseVelocity = Vector2(20, 0);
+      }
+    });
+  }
+
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
@@ -43,6 +54,10 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
 
     final coin = Coin();
     add(coin);
+
+    final banana = Banana();
+    add(banana);
+
     startGamePlay();
   }
 
@@ -70,6 +85,7 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
       overlays.remove(Hub.id);
       pauseEngine();
       AudioManager.instance.pauseBgm();
+      return;
     }
   }
 

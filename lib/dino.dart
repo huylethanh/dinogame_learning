@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_learning/Models/player.dart';
+import 'package:flame_learning/banana.dart';
 import 'package:flame_learning/coin.dart';
 import 'package:flame_learning/constansts.dart';
 import 'package:flame_learning/enemy.dart';
@@ -81,13 +82,21 @@ class Dino extends SpriteAnimationGroupComponent
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
     super.onCollision(intersectionPoints, other);
 
-    if (other is Enemy && current != DinoState.hit) {
+    if (other is Enemy && current != DinoState.hit && !player.invisible) {
       hit(other);
+      return;
     }
 
     if (other is Coin) {
       player.pickCoin();
       other.reset();
+      return;
+    }
+
+    if (other is Banana) {
+      other.removeFromParent();
+      player.setInvisible();
+      return;
     }
   }
 
@@ -111,6 +120,9 @@ class Dino extends SpriteAnimationGroupComponent
     }
 
     _hitTimer.update(dt);
+    if (player.invisible) {
+      player.updateTimer(dt);
+    }
   }
 
   void jump() {
