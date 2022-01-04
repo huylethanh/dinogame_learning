@@ -34,15 +34,27 @@ class Hub extends StatelessWidget {
                 label: const Text(""),
               ),
               Selector<Player, int>(
-                  selector: (_, player) => player.score,
-                  builder: (_, score, __) {
-                    return Text(
-                      score.toString(),
-                      // ignore: prefer_const_constructors
-                      style: TextStyle(
-                          fontFamily: "Audiowide", color: Colors.white),
-                    );
-                  }),
+                selector: (_, player) => player.score,
+                builder: (_, score, __) {
+                  return Text(
+                    score.toString(),
+                    // ignore: prefer_const_constructors
+                    style:
+                        TextStyle(fontFamily: "Audiowide", color: Colors.white),
+                  );
+                },
+              ),
+              Selector<Player, int>(
+                selector: (_, player) => player.coin,
+                builder: (_, coin, __) {
+                  return Text(
+                    coin.toString(),
+                    // ignore: prefer_const_constructors
+                    style:
+                        TextStyle(fontFamily: "Audiowide", color: Colors.white),
+                  );
+                },
+              ),
               Selector<Player, int>(
                   selector: (_, player) => player.lives,
                   builder: (_, lives, __) {

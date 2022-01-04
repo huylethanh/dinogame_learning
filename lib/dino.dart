@@ -3,9 +3,9 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_learning/Models/player.dart';
+import 'package:flame_learning/coin.dart';
 import 'package:flame_learning/constansts.dart';
 import 'package:flame_learning/enemy.dart';
-
 import 'audio_manager.dart';
 
 enum DinoState {
@@ -83,6 +83,11 @@ class Dino extends SpriteAnimationGroupComponent
 
     if (other is Enemy && current != DinoState.hit) {
       hit(other);
+    }
+
+    if (other is Coin) {
+      player.pickCoin();
+      other.reset();
     }
   }
 

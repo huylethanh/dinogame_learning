@@ -4,6 +4,7 @@ class Player extends ChangeNotifier {
   static const int maxLives = 5;
   int _lives = maxLives;
   int score = 0;
+  int coin = 0;
 
   int get lives => _lives;
   void lostLive() {
@@ -19,5 +20,10 @@ class Player extends ChangeNotifier {
   void reset() {
     score = 0;
     _lives = maxLives;
+  }
+
+  void pickCoin() {
+    coin += 1;
+    notifyListeners();
   }
 }

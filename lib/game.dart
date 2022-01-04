@@ -4,6 +4,7 @@ import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_learning/Models/player.dart';
 import 'package:flame_learning/audio_manager.dart';
+import 'package:flame_learning/coin.dart';
 import 'package:flame_learning/dino.dart';
 import 'package:flame_learning/enemy_manager.dart';
 import 'package:flame_learning/widgets/game_over.dart';
@@ -40,6 +41,8 @@ class DinoGame extends FlameGame with TapDetector, HasCollidables {
     AudioManager.instance.init(_audioAssets);
     _loadParallax();
 
+    final coin = Coin();
+    add(coin);
     startGamePlay();
   }
 
